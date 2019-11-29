@@ -14,3 +14,7 @@ div.net-cat {
 span.ajax-text {
     display: none;
 }
+
+table.sorting.categories td {
+    padding: 20px !important;
+}
