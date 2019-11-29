@@ -16,7 +16,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -74,3 +74,12 @@
 <div>
     @Html.ActionLink("Back to Pages", "Index")
 </div>
+
+@section Scripts {
+<script src="~/Scripts/ckeditor/ckeditor.js"></script>
+
+<script>
+    CKEDITOR.replace("Body");
+</script>
+
+}
