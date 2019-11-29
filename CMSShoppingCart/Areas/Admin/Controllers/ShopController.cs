@@ -29,5 +29,40 @@ namespace CMSShoppingCart.Areas.Admin.Controllers
             //return view with list
             return View(categoryVMList);
         }
+
+        // POST: Admin/Shop/AddNewCategory
+        [HttpPost]
+        public string AddNewCategory(string catName)
+        {
+            //declare id
+            string id;
+
+            using (Db db = new Db())
+            {
+                //check that category name is unique
+                if (db.Categories.Any(x => x.Name == catName))
+                {
+                    return "titletaken";
+                }
+
+                //init DTO
+                CategoryDTO dto = new CategoryDTO();
+
+                //add to DTO
+                dto.Name = catName;
+                dto.Slug = catName.Replace(" ", "-").ToLower();
+                dto.Sorting = 100;
+
+                //save DTO
+                db.Categories.Add(dto);
+                db.SaveChanges();
+
+                //get the id
+                id = dto.Id.ToString();
+            }
+
+            //return id
+            return id;
+        }
     }
 }
