@@ -1,5 +1,6 @@
 ﻿using CMSShoppingCart.Models.Data;
 using CMSShoppingCart.Models.ViewModels.Shop;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -284,6 +285,38 @@ namespace CMSShoppingCart.Areas.Admin.Controllers
 
             //Redirect
             return RedirectToAction("AddProduct");
+        }
+
+        // GET: Admin/Shop/Products
+        public ActionResult Products(int? page,int? catId)
+        {
+            //declare a list of ProductVM
+            List<ProductVM> listOfProductVM;
+
+            //set page number
+            var pageNumber = page ?? 1;
+
+            using (Db db = new Db())
+            {
+                //init the list
+                listOfProductVM = db.Products.ToArray()
+                                    .Where(x => catId == null || catId == 0 || x.CategoryId == catId)
+                                    .Select(x => new ProductVM(x))
+                                    .ToList();
+
+                //populate categories select list
+                ViewBag.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+
+                //set selected category
+                ViewBag.SelectedCat = catId.ToString();
+            }
+
+            //set pagination
+            var onePageOfProducts = listOfProductVM.ToPagedList(pageNumber, 3);
+            ViewBag.OnePageOfProducts = onePageOfProducts;
+
+            //return view with list
+            return View(listOfProductVM);
         }
     }
 }
