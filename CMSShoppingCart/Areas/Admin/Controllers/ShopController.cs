@@ -12,8 +12,10 @@ using System.Web.Mvc;
 
 namespace CMSShoppingCart.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ShopController : Controller
     {
+
         // GET: Admin/Shop/Categories
         public ActionResult Categories()
         {

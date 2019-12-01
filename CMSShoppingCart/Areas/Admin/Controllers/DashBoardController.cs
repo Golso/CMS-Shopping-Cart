@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace CMSShoppingCart.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DashBoardController : Controller
     {
         // GET: Admin/DashBoard
