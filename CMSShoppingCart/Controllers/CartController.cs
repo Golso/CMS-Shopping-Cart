@@ -59,6 +59,8 @@ namespace CMSShoppingCart.Controllers
                     qty += item.Quantity;
                     price += item.Quantity * item.Price;
                 }
+                model.Quantity = qty;
+                model.Price = price;
             }
             else
             {
@@ -124,6 +126,76 @@ namespace CMSShoppingCart.Controllers
 
             //return partial view with model
             return PartialView(model);
+        }
+
+        public JsonResult IncrementProduct(int productId)
+        {
+            //init cart list
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            using (Db db = new Db())
+            {
+                //get cartVM from list
+                CartVM model = cart.FirstOrDefault(x => x.ProductId == productId);
+
+                //increment qty
+                model.Quantity++;
+
+                //store needed data
+                var result = new { qty = model.Quantity, price = model.Price };
+
+                //return json with data
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+
+
+        }
+
+        // GET: /Cart/DecrementProduct
+        public ActionResult DecrementProduct(int productId)
+        {
+            //init cart
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            using (Db db = new Db())
+            {
+                //get model from list
+                CartVM model = cart.FirstOrDefault(x => x.ProductId == productId);
+
+                //decrement qty
+                if(model.Quantity>1)
+                {
+                    model.Quantity--;
+                }
+                else
+                {
+                    model.Quantity = 0;
+                    cart.Remove(model);
+                }
+
+                //store needed data
+                var result = new { qty = model.Quantity, price = model.Price };
+
+                //return json
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // GET: /Cart/RemoveProduct
+        public void RemoveProduct(int productId)
+        {
+            //init cart list
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            using (Db db = new Db())
+            {
+                //get model from list
+                CartVM model = cart.FirstOrDefault(x => x.ProductId == productId);
+
+                //remove model from list
+                cart.Remove(model);
+            }
+
         }
     }
 }
